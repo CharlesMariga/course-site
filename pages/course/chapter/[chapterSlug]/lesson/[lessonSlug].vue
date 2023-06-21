@@ -2,6 +2,8 @@
 import { useRoute } from "vue-router";
 import { useCourse } from "../../../../../composables/useCourse";
 import { computed } from "vue";
+import LessonCompleteButton from "~/components/LessonCompleteButton.vue";
+import { captureRejectionSymbol } from "events";
 
 const route = useRoute();
 const course = useCourse();
@@ -21,6 +23,32 @@ const title = computed(() => `${lesson?.value?.title} - ${course.title}`);
 useHead({
   title,
 });
+
+const progress = useState("progress", () => [[false]]);
+
+const isLessonComplete = computed(() => {
+  if (!chapter?.value?.number) return false;
+
+  if (!progress.value[chapter.value.number - 1]) return false;
+
+  if (!lesson?.value?.number) return false;
+
+  if (!progress.value[chapter.value.number - 1][lesson.value.number - 1])
+    return false;
+
+  return progress.value[chapter.value.number - 1][lesson.value.number - 1];
+});
+
+const toggleComplete = () => {
+  if (!chapter?.value?.number || !lesson.value?.number) return;
+
+  if (!progress.value[chapter.value.number - 1]) {
+    progress.value[chapter.value.number - 1] = [];
+  }
+
+  progress.value[chapter.value.number - 1][lesson.value.number - 1] =
+    !isLessonComplete.value;
+};
 </script>
 
 <template>
@@ -47,5 +75,9 @@ useHead({
     </div>
     <VideoPlayer v-if="lesson?.videoId" :videoId="lesson.videoId" />
     <p>{{ lesson?.text }}</p>
+    <LessonCompleteButton
+      :modelValue="isLessonComplete"
+      @update:modelValue="toggleComplete"
+    />
   </div>
 </template>

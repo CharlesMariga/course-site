@@ -43,7 +43,7 @@ const { chapters } = useCourse();
           </NuxtLink>
         </div>
       </div>
-      <div class="rounde-md max-w-2xl flex-1 bg-white p-12">
+      <div class="rounde-md prose max-w-2xl flex-1 bg-white p-12">
         <NuxtPage />
       </div>
     </div>
