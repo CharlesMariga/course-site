@@ -2,8 +2,6 @@
 import { useRoute } from "vue-router";
 import { useCourse } from "../../../../../composables/useCourse";
 import { computed } from "vue";
-import LessonCompleteButton from "~/components/LessonCompleteButton.vue";
-import { captureRejectionSymbol } from "events";
 
 const route = useRoute();
 const course = useCourse();
@@ -24,7 +22,7 @@ useHead({
   title,
 });
 
-const progress = useState("progress", () => [[false]]);
+const progress = useLocalStorage("progress", () => [[false]]);
 
 const isLessonComplete = computed(() => {
   if (!chapter?.value?.number) return false;
@@ -75,9 +73,11 @@ const toggleComplete = () => {
     </div>
     <VideoPlayer v-if="lesson?.videoId" :videoId="lesson.videoId" />
     <p>{{ lesson?.text }}</p>
-    <LessonCompleteButton
-      :modelValue="isLessonComplete"
-      @update:modelValue="toggleComplete"
-    />
+    <ClientOnly>
+      <LessonCompleteButton
+        :modelValue="isLessonComplete"
+        @update:modelValue="toggleComplete"
+      />
+    </ClientOnly>
   </div>
 </template>
