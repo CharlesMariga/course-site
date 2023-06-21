@@ -1,9 +1,7 @@
 <template>
-  <div
-    class="flex flex-col items-center w-full h-full min-h-screen p-12 bg-gray-100"
-  >
-    <div class="mb-12 prose">
-      <h1>
+  <div class="w-full h-full min-h-screen p-12 bg-gray-100">
+    <div class="mb-12 prose mx-auto">
+      <h1 class="text-center">
         <span class="font-medium">
           Course:
           <span class="font-bold">Mastering Nuxt 3</span>
@@ -11,15 +9,11 @@
       </h1>
     </div>
 
-    <div class="flex flex-row justify-center flex-grow">
-      <div
-        class="prose mr-4 p-8 bg-white rounded-md min-w-[20ch] max-w-[30ch] flex flex-col"
-      >
-        <h3>Chapters</h3>
-        <!-- All the lessons and chapters listed here -->
+    <div class="max-w-7xl mx-auto flex gap-4 justify-center">
+      <div class="bg-white rounded-md flex p-8">
+        <h3>Chapter</h3>
       </div>
-
-      <div class="prose p-12 bg-white rounded-md w-[65ch]">
+      <div class="bg-white rounde-md p-12 flex-1 max-w-2xl">
         <NuxtPage />
       </div>
     </div>
