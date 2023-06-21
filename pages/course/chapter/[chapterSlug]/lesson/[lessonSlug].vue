@@ -15,28 +15,34 @@ const lesson = computed(() =>
     (lesson) => lesson.slug === route.params.lessonSlug
   )
 );
+
+const title = computed(() => `${lesson?.value?.title} - ${course.title}`);
+
+useHead({
+  title,
+});
 </script>
 
 <template>
   <div>
-    <p class="mt-0 uppercase font-bold text-slate-400 mb-1">
+    <p class="mb-1 mt-0 font-bold uppercase text-slate-400">
       Lesson {{ chapter?.number }} - {{ lesson?.number }}
     </p>
     <h2 class="my-0">{{ lesson?.title }}</h2>
-    <div class="flex space-x-4 mt-2 mb-8">
-      <a
+    <div class="mb-8 mt-2 flex space-x-4">
+      <NuxtLink
         v-if="lesson?.sourceUrl"
         target="_blank"
-        class="font-normal text-md text-gray-500"
-        :href="lesson?.sourceUrl"
-        >Download Source Code</a
+        class="text-md font-normal text-gray-500 underline"
+        :to="lesson?.sourceUrl"
+        >Download Source Code</NuxtLink
       >
-      <a
+      <NuxtLink
         v-if="lesson?.downloadUrl"
         target="_blank"
-        class="font-normal text-md text-gray-500"
-        :href="lesson?.downloadUrl"
-        >Download video</a
+        class="text-md font-normal text-gray-500 underline"
+        :to="lesson?.downloadUrl"
+        >Download video</NuxtLink
       >
     </div>
     <VideoPlayer v-if="lesson?.videoId" :videoId="lesson.videoId" />
