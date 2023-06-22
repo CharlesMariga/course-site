@@ -76,7 +76,7 @@ const toggleComplete = () => {
     <ClientOnly>
       <LessonCompleteButton
         :modelValue="isLessonComplete"
-        @update:modelValue="toggleComplete"
+        @update:modelValue="throw createError('Could not update');"
       />
     </ClientOnly>
   </div>
