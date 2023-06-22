@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useCourse } from "~/composables/useCourse";
-
 const { chapters } = useCourse();
 </script>
 
@@ -24,17 +22,13 @@ const { chapters } = useCourse();
       >
         <h4>{{ chapter.title }}</h4>
         <NuxtLink
-          :to="`/course/chapter/${chapter.slug}/lesson/${lesson.slug}`"
+          :to="lesson.path"
           v-for="(lesson, index) in chapter.lessons"
           :key="lesson.slug"
           class="prose-sm -mx-4 flex flex-row space-x-1 px-4 py-1 font-normal no-underline"
           :class="{
-            'text-blue-500':
-              lesson.slug === $route.params.lessonSlug &&
-              chapter.slug === $route.params.chapterSlug,
-            'text-gray-600':
-              lesson.slug !== $route.params.lessonSlug ||
-              chapter.slug !== $route.params.chapterSlug,
+            'text-blue-500': $route.fullPath === lesson.path,
+            'text-gray-600': $route.fullPath !== lesson.path,
           }"
         >
           <span class="text-gray-500">{{ index + 1 }}.</span>
