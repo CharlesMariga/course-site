@@ -6,29 +6,47 @@ import { computed } from "vue";
 const route = useRoute();
 const course = useCourse();
 
+definePageMeta({
+  validate({ params }) {
+    const course = useCourse();
+
+    const chapter = computed(() =>
+      course.chapters.find((chapter) => chapter.slug === params.chapterSlug)
+    );
+
+    if (!chapter.value) {
+      return createError({
+        statusCode: 404,
+        message: "Chapter not found",
+      });
+    }
+
+    const lesson = computed(() =>
+      chapter?.value?.lessons.find(
+        (lesson) => lesson.slug === params.lessonSlug
+      )
+    );
+
+    if (!lesson.value) {
+      return createError({
+        statusCode: 404,
+        message: "Lesson not found",
+      });
+    }
+
+    return true;
+  },
+});
+
 const chapter = computed(() =>
   course.chapters.find((chapter) => chapter.slug === route.params.chapterSlug)
 );
-
-if (!chapter.value) {
-  throw createError({
-    statusCode: 404,
-    message: "Chapter not found",
-  });
-}
 
 const lesson = computed(() =>
   chapter?.value?.lessons.find(
     (lesson) => lesson.slug === route.params.lessonSlug
   )
 );
-
-if (!lesson.value) {
-  throw createError({
-    statusCode: 404,
-    message: "Lesson not found",
-  });
-}
 
 const title = computed(() => `${lesson?.value?.title} - ${course.title}`);
 
