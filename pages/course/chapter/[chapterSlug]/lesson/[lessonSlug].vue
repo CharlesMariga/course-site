@@ -7,7 +7,7 @@ const route = useRoute();
 const course = useCourse();
 
 definePageMeta({
-  validate({ params }) {
+  middleware: function ({ params }, from) {
     const course = useCourse();
 
     const chapter = computed(() =>
@@ -15,10 +15,12 @@ definePageMeta({
     );
 
     if (!chapter.value) {
-      return createError({
-        statusCode: 404,
-        message: "Chapter not found",
-      });
+      return abortNavigation(
+        createError({
+          statusCode: 404,
+          message: "Chapter not found",
+        })
+      );
     }
 
     const lesson = computed(() =>
@@ -28,13 +30,13 @@ definePageMeta({
     );
 
     if (!lesson.value) {
-      return createError({
-        statusCode: 404,
-        message: "Lesson not found",
-      });
+      return abortNavigation(
+        createError({
+          statusCode: 404,
+          message: "Lesson not found",
+        })
+      );
     }
-
-    return true;
   },
 });
 
