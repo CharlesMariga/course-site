@@ -1,10 +1,20 @@
 <script setup lang="ts">
 const user = useSupabaseUser();
-
-console.log("User: ", user?.value);
+const { auth } = useSupabaseAuthClient();
 
 const name = computed(() => user?.value?.user_metadata?.full_name);
 const profile = computed(() => user?.value?.user_metadata?.avatar_url);
+
+const logout = async () => {
+  const { error } = await auth.signOut();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  await navigateTo("/login");
+};
 </script>
 
 <template>
@@ -16,7 +26,9 @@ const profile = computed(() => user?.value?.user_metadata?.avatar_url);
     />
     <div class="text-right">
       <div class="font-medium">{{ name }}</div>
-      <button class="text-sm text-slate-500 underline">Log out</button>
+      <button class="text-sm text-slate-500 underline" @click="logout">
+        Log out
+      </button>
     </div>
   </div>
 </template>
