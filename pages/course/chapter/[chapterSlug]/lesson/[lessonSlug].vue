@@ -2,9 +2,13 @@
 import { useRoute } from "vue-router";
 import { useCourse } from "../../../../../composables/useCourse";
 import { computed } from "vue";
+import useLesson from "~/composables/useLesson";
 
 const route = useRoute();
 const course = useCourse();
+const { chapterSlug, lessonSlug } = route.params;
+
+const lesson = await useLesson(chapterSlug as string, lessonSlug as string);
 
 definePageMeta({
   middleware: [
@@ -45,12 +49,6 @@ definePageMeta({
 
 const chapter = computed(() =>
   course.chapters.find((chapter) => chapter.slug === route.params.chapterSlug)
-);
-
-const lesson = computed(() =>
-  chapter?.value?.lessons.find(
-    (lesson) => lesson.slug === route.params.lessonSlug
-  )
 );
 
 const title = computed(() => `${lesson?.value?.title} - ${course.title}`);
