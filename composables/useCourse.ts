@@ -1,31 +1,9 @@
 import courseData from "./courseData";
-
-type Lesson = {
-  title: string;
-  slug: string;
-  number: number;
-  videoId: number;
-  sourceUrl?: string;
-  downloadUrl: string;
-  text: string;
-  path: string;
-};
-
-type Chapter = {
-  title: string;
-  slug: string;
-  number: number;
-  lessons: Lesson[];
-};
-
-type Course = {
-  title: string;
-  chapters: Chapter[];
-};
+import { Chapter, LessonWithPath, Course } from "~/types/course";
 
 export const useCourse = (): Course => {
   const chapters: Chapter[] = courseData.chapters.map((chapter) => {
-    const lessons: Lesson[] = chapter.lessons.map((lesson) => ({
+    const lessons: LessonWithPath[] = chapter.lessons.map((lesson) => ({
       ...lesson,
       path: `/course/chapter/${chapter.slug}/lesson/${lesson.slug}`,
     }));

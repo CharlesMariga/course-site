@@ -1,12 +1,15 @@
-import course from "../../../../../courseData";
+import course from "~/server/api/course/courseData";
+import { Chapter, LessonWithPath, Course, Lesson } from "~/types/course";
 
-export default defineEventHandler((event) => {
+course as Course;
+
+export default defineEventHandler((event): LessonWithPath => {
   const { chapterSlug, lessonSlug } = event.context.params as {
     chapterSlug: string;
     lessonSlug: string;
   };
 
-  const chapter = course.chapters.find(
+  const chapter: Maybe<Chapter> = course.chapters.find(
     (chapter) => chapter.slug === chapterSlug
   );
 
@@ -17,7 +20,9 @@ export default defineEventHandler((event) => {
     });
   }
 
-  const lesson = chapter.lessons.find((lesson) => lesson.slug === lessonSlug);
+  const lesson: Maybe<Lesson> = chapter.lessons.find(
+    (lesson) => lesson.slug === lessonSlug
+  );
 
   if (!lesson) {
     throw createError({
@@ -26,5 +31,8 @@ export default defineEventHandler((event) => {
     });
   }
 
-  return { status: "success", data: { ...lesson } };
+  return {
+    ...lesson,
+    path: `/course/chapter/${chapter.slug}/lesson/${lesson.slug}`,
+  };
 });
