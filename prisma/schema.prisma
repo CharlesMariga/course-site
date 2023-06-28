@@ -10,7 +10,7 @@ generator client {
 model Course {
   id        Int       @id @default(autoincrement())
   title     String
-  Chapters  Chapter[]
+  chapters  Chapter[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -23,8 +23,8 @@ model Chapter {
   lessons   Lesson[]
   createAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Course    Course   @relation(fields: [courseId], references: [id])
-  courseId  Int
+  Course    Course?  @relation(fields: [courseId], references: [id])
+  courseId  Int?
 }
 
 model Lesson {
@@ -33,11 +33,11 @@ model Lesson {
   slug        String
   number      Int
   downloadUrl String
-  videoId     String
+  videoId     Int
   text        String
   sourceUrl   String?
   createAt    DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  Chapter     Chapter  @relation(fields: [chapterId], references: [id])
-  chapterId   Int
+  Chapter     Chapter? @relation(fields: [chapterId], references: [id])
+  chapterId   Int?
 }
