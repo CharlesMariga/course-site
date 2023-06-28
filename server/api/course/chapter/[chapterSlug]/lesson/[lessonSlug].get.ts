@@ -7,14 +7,25 @@ export default defineEventHandler(async (event) => {
     chapterSlug: string;
     lessonSlug: string;
   };
-  return prisma.lesson.findMany({
+
+  const lesson = await prisma.lesson.findFirst({
     where: {
+      slug: lessonSlug,
       Chapter: {
         slug: chapterSlug,
       },
     },
-    select: {
-      slug: true,
-    },
   });
+
+  if (!lesson) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Lesson not found",
+    });
+  }
+
+  return {
+    ...lesson,
+    path: `/course/chapter/${chapterSlug}/lesson/${lessonSlug}`,
+  };
 });
