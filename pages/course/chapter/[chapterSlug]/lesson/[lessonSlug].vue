@@ -2,18 +2,23 @@
 import { useRoute } from "vue-router";
 import { computed } from "vue";
 import useLesson from "~/composables/useLesson";
-import { CourseMeta } from "~/types/course";
+import { useCourseProgressStore } from "~/stores/courseProgess";
 
 const route = useRoute();
-const course: Ref<CourseMeta> = await useCourse();
+const course = await useCourse();
+const store = useCourseProgressStore();
+const { initialize, toggleComplete } = store;
 const { chapterSlug, lessonSlug } = route.params;
+const user = useSupabaseUser();
 
 const lesson = await useLesson(chapterSlug as string, lessonSlug as string);
+
+initialize();
 
 definePageMeta({
   middleware: [
     async function ({ params }, from) {
-      const course: Ref<CourseMeta> = await useCourse();
+      const course = await useCourse();
 
       const chapter = computed(() =>
         course.value.chapters.find(
@@ -49,6 +54,12 @@ definePageMeta({
   ],
 });
 
+// Check if the current lesson is completed
+const isCompleted =
+  computed(
+    () => store.progress?.[chapterSlug as string]?.[lessonSlug as string]
+  ) || 0;
+
 const chapter = computed(() =>
   course.value.chapters.find(
     (chapter) => chapter.slug === route.params.chapterSlug
@@ -60,32 +71,6 @@ const title = computed(() => `${lesson?.value?.title} - ${course.value.title}`);
 useHead({
   title,
 });
-
-const progress = useLocalStorage("progress", () => [[false]]);
-
-const isLessonComplete = computed(() => {
-  if (!chapter?.value?.number) return false;
-
-  if (!progress.value[chapter.value.number - 1]) return false;
-
-  if (!lesson?.value?.number) return false;
-
-  if (!progress.value[chapter.value.number - 1][lesson.value.number - 1])
-    return false;
-
-  return progress.value[chapter.value.number - 1][lesson.value.number - 1];
-});
-
-const toggleComplete = () => {
-  if (!chapter?.value?.number || !lesson.value?.number) return;
-
-  if (!progress.value[chapter.value.number - 1]) {
-    progress.value[chapter.value.number - 1] = [];
-  }
-
-  progress.value[chapter.value.number - 1][lesson.value.number - 1] =
-    !isLessonComplete.value;
-};
 </script>
 
 <template>
@@ -114,8 +99,9 @@ const toggleComplete = () => {
     <p>{{ lesson?.text }}</p>
     <ClientOnly>
       <LessonCompleteButton
-        :modelValue="isLessonComplete"
-        @update:modelValue="throw createError('Could not update');"
+        v-if="user"
+        :modelValue="isCompleted"
+        @update:modelValue="toggleComplete"
       />
     </ClientOnly>
   </div>
