@@ -36,7 +36,7 @@ const resetError = async (error: any) => {
             :to="lesson.path"
             v-for="(lesson, index) in chapter.lessons"
             :key="lesson.slug"
-            class="prose-sm -mx-4 flex flex-row space-x-1 px-4 py-1 font-normal no-underline"
+            class="prose-sm -mx-4 flex cursor-pointer flex-row space-x-1 px-4 py-1 font-normal no-underline"
             :class="{
               'text-blue-500': $route.fullPath === lesson.path,
               'text-gray-600': $route.fullPath !== lesson.path,
