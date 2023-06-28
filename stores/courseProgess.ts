@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
-import { Chapter } from "@prisma/client";
+import { CourseProgress } from "~/types/course";
 
 export const useCourseProgressStore = defineStore("courseProgress", () => {
   // Initialize the progress from local storage
-  const progress: any = ref<any>({});
+  const progress: any = ref<CourseProgress>({});
   const initialized = ref(false);
 
   async function initialize() {
@@ -11,7 +11,13 @@ export const useCourseProgressStore = defineStore("courseProgress", () => {
     if (initialized.value) return;
     initialized.value = true;
 
-    // TODO: Fetch user progress from endping (lesson 6-5)
+    const { data: userProgress } = await useFetch<CourseProgress>(
+      "/api/user/progress",
+      { headers: useRequestHeaders(["cookie"]) }
+    );
+
+    // Update progress value
+    if (userProgress.value) progress.value = userProgress.value;
   }
 
   // Toggle the progress of a lesson based on chapter slug and lesson slug

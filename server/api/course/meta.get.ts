@@ -56,7 +56,7 @@ export default defineEventHandler(async (): Promise<CourseOutline> => {
     ...chapter,
     lessons: chapter.lessons.map((lesson) => ({
       ...lesson,
-      path: `/courses/chapter/${chapter.slug}/lesson/${lesson.slug}`,
+      path: `/course/chapter/${chapter.slug}/lesson/${lesson.slug}`,
     })),
   }));
 
