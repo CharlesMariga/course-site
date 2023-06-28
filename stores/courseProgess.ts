@@ -3,7 +3,7 @@ import { Chapter } from "@prisma/client";
 
 export const useCourseProgressStore = defineStore("courseProgress", () => {
   // Initialize the progress from local storage
-  const progress: any = useLocalStorage("courseProgress", {});
+  const progress: any = ref<any>({});
   const initialized = ref(false);
 
   async function initialize() {
@@ -38,7 +38,23 @@ export const useCourseProgressStore = defineStore("courseProgress", () => {
       [lesson]: !currentProgress,
     };
 
-    // TODO: Update the DB (lesson 6-4)
+    try {
+      await $fetch(`/api/course/chapter/${chapter}/lesson/${lesson}/progress`, {
+        method: "POST",
+        body: {
+          completed: !currentProgress,
+          userEmail: user.value.email,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+
+      // If the request failed, revert the progress value
+      progress.value[chapter] = {
+        ...progress.value[chapter],
+        [lesson]: currentProgress,
+      };
+    }
   }
 
   return {
