@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { useCourse } from "../../../../../composables/useCourse";
 import { computed } from "vue";
 import useLesson from "~/composables/useLesson";
+import { CourseMeta } from "~/types/course";
 
 const route = useRoute();
-const course = useCourse();
+const course: Ref<CourseMeta> = await useCourse();
 const { chapterSlug, lessonSlug } = route.params;
 
 const lesson = await useLesson(chapterSlug as string, lessonSlug as string);
 
 definePageMeta({
   middleware: [
-    function ({ params }, from) {
-      const course = useCourse();
+    async function ({ params }, from) {
+      const course: Ref<CourseMeta> = await useCourse();
 
       const chapter = computed(() =>
-        course.chapters.find((chapter) => chapter.slug === params.chapterSlug)
+        course.value.chapters.find(
+          (chapter) => chapter.slug === params.chapterSlug
+        )
       );
 
       if (!chapter.value) {
@@ -48,10 +50,12 @@ definePageMeta({
 });
 
 const chapter = computed(() =>
-  course.chapters.find((chapter) => chapter.slug === route.params.chapterSlug)
+  course.value.chapters.find(
+    (chapter) => chapter.slug === route.params.chapterSlug
+  )
 );
 
-const title = computed(() => `${lesson?.value?.title} - ${course.title}`);
+const title = computed(() => `${lesson?.value?.title} - ${course.value.title}`);
 
 useHead({
   title,

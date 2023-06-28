@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { useFirstLesson } from "~/composables/useFirstLesson";
-
-const firstLesson = useFirstLesson();
+const firstLesson = await useFirstLesson();
 </script>
 
 <template>

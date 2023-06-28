@@ -1,7 +1,11 @@
 <script setup lang="ts">
-const { chapters, title } = useCourse();
+import { OutlineLesson } from "~/types/course";
 
-const resetError = (error: any) => {
+const course = await useCourse();
+const firstLesson: OutlineLesson = await useFirstLesson();
+
+const resetError = async (error: any) => {
+  await navigateTo(firstLesson.path);
   error.value = null;
 };
 </script>
@@ -13,7 +17,7 @@ const resetError = (error: any) => {
     >
       <h1 class="text-center">
         <span class="font-medium">
-          <span class="font-bold">{{ title }}</span>
+          <span class="font-bold">{{ course.title }}</span>
         </span>
       </h1>
       <UserCard />
@@ -24,7 +28,7 @@ const resetError = (error: any) => {
         <h3>Chapters</h3>
         <div
           class="mb-4 flex flex-col space-y-1"
-          v-for="chapter in chapters"
+          v-for="chapter in course.chapters"
           :key="chapter.slug"
         >
           <h4>{{ chapter.title }}</h4>

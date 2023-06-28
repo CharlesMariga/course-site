@@ -1,5 +1,4 @@
 import { StorageSerializers } from "@vueuse/core";
-import { LessonWithPath } from "~~/types/course";
 
 export default async <T>(url: string) => {
   const cached = useSessionStorage<T>(url, null, {
